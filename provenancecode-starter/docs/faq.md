@@ -508,7 +508,7 @@ vscode.languages.registerHoverProvider('*', {
 
 ### Where can I ask questions?
 
-- **GitHub Issues**: [ProvenanceCode Repository](https://github.com/kierandesmond/ProvenanceCode/issues)
+- **GitHub Issues**: [ProvenanceCode Repository](https://github.com/provenancecode/ProvenanceCode/issues)
 - **Discussions**: GitHub Discussions (coming soon)
 - **Email**: [Your contact email]
 
@@ -521,7 +521,7 @@ Contributions welcome:
 - Report issues
 - Suggest features
 
-See [CONTRIBUTING.md](https://github.com/kierandesmond/ProvenanceCode/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/provenancecode/ProvenanceCode/CONTRIBUTING.md)
 
 ### Where can I see examples?
 
@@ -534,9 +534,9 @@ See [CONTRIBUTING.md](https://github.com/kierandesmond/ProvenanceCode/CONTRIBUTI
 - [Quick Start Guide](quickstart.md)
 - [Decision Records Guide](decision-records.md)
 - [AI Integration Guide](ai-rules.md)
-- [ProvenanceCode GitHub](https://github.com/kierandesmond/ProvenanceCode)
+- [ProvenanceCode GitHub](https://github.com/provenancecode/ProvenanceCode)
 
 ---
 
-**Still have questions?** Open an issue on the [ProvenanceCode repository](https://github.com/kierandesmond/ProvenanceCode/issues).
+**Still have questions?** Open an issue on the [ProvenanceCode repository](https://github.com/provenancecode/ProvenanceCode/issues).
 

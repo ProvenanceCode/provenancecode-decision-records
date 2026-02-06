@@ -27,7 +27,7 @@ For detailed instructions, see [docs/quickstart.md](docs/quickstart.md)
 ```
 provenancecode-starter/
 ├── README.md                          # This file
-├── LICENSE                            # MIT License
+├── LICENSE                            # Apache 2.0 License
 ├── docs/                              # Documentation
 │   ├── quickstart.md                  # Getting started guide
 │   ├── decision-records.md            # How to write decision records
@@ -100,7 +100,9 @@ Contributions are welcome! Please see the main ProvenanceCode repository for con
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details
+Apache License 2.0 - Copyright 2026 KDDLC AI Solutions operating as ProvenanceCode
+
+See [LICENSE](LICENSE) file for details
 
 ## Learn More
 

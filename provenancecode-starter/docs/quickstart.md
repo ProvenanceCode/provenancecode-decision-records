@@ -11,7 +11,7 @@ Get up and running with ProvenanceCode in your project in less than 10 minutes.
 cp -r provenancecode-starter/* ./
 
 # Or if you're starting fresh
-git clone https://github.com/your-org/provenancecode-starter.git
+git clone https://github.com/provenancecode/ProvenanceCode-Starter.git
 cd provenancecode-starter
 ```
 

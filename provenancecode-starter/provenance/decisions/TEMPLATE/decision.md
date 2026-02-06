@@ -330,6 +330,6 @@ Machine-readable information for tooling.
 <!-- 
 ProvenanceCode Template v1.0
 Last updated: 2026-02-06
-For more information: https://github.com/kierandesmond/ProvenanceCode
+For more information: https://github.com/provenancecode/ProvenanceCode
 -->
 
