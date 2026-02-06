@@ -1,16 +1,30 @@
 # ProvenanceCode Starter Pack
 
-A comprehensive starter template for integrating ProvenanceCode into your software projects. This pack provides everything you need to start tracking architectural decisions, maintaining code provenance, and enabling AI-assisted development with proper decision context.
+A comprehensive starter template for implementing the ProvenanceCode methodology in your software projects. This pack provides everything you need to start tracking architectural decisions, maintaining code provenance, and enabling AI-assisted development with proper decision context.
 
 ## What is ProvenanceCode?
 
-ProvenanceCode is a framework for capturing, tracking, and leveraging the provenance of code decisions throughout the software development lifecycle. It enables teams to:
+**ProvenanceCode** is a methodology and open standard for decision-driven development with AI. It defines how to capture, track, and leverage the provenance of code decisions throughout the software development lifecycle.
+
+The ProvenanceCode methodology enables teams to:
 
 - 📝 Document architectural decisions with rich context
 - 🔍 Track the evolution and rationale behind code changes
 - 🤖 Provide AI assistants with decision context for better suggestions
 - ✅ Validate changes against established policies and patterns
 - 🔗 Link code artifacts to their decision provenance
+
+## About This Starter Pack
+
+This **ProvenanceCode Starter Pack** is a reference implementation of the ProvenanceCode methodology. It provides:
+
+- **Git-native structure** for decision records (Markdown, JSON, JSON-LD, C2PA)
+- **AI assistant integration** with enforcement rules for Cursor, Copilot, and Claude
+- **Validation tools** for decision quality and schema compliance
+- **Policy enforcement** for critical code paths
+- **Complete documentation** and examples
+
+The ProvenanceCode methodology is open and can be implemented in various ways. This starter pack represents one complete, production-ready implementation that you can use immediately or adapt to your needs.
 
 ## Quick Start
 
