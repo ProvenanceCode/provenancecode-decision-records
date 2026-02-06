@@ -112,6 +112,8 @@ AI assistants can read decision context and suggest changes that align with your
 
 Contributions are welcome! Please see the main ProvenanceCode repository for contribution guidelines.
 
+Authored by Kieran Desmond - @kierandes
+
 ## License
 
 Apache License 2.0 - Copyright 2026 KDDLC AI Solutions operating as ProvenanceCode
