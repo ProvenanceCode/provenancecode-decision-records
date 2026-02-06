@@ -105,7 +105,7 @@ MIT License - See [LICENSE](LICENSE) file for details
 ## Learn More
 
 - [Documentation](docs/)
-- [ProvenanceCode GitHub](https://github.com/kierandesmond/ProvenanceCode)
+- [ProvenanceCode GitHub](https://github.com/provenancecode/ProvenanceCode)
 - [Examples and Templates](provenance/decisions/TEMPLATE/)
 
 ---
