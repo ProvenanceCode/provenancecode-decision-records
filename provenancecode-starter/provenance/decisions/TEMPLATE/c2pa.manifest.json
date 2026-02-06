@@ -1,0 +1,266 @@
+{
+  "claim_generator": "ProvenanceCode/1.0",
+  "claim_generator_info": [
+    {
+      "name": "ProvenanceCode Decision Record System",
+      "version": "1.0.0",
+      "icon": "https://provenancecode.org/icon.png"
+    }
+  ],
+  "title": "Example Decision Template - Content Authenticity Manifest",
+  "format": "application/json",
+  "instance_id": "xmp:iid:template-example-decision",
+  "signature": {
+    "algorithm": "sha256",
+    "certificate": "placeholder-certificate-will-be-generated",
+    "issuer": "ProvenanceCode Certificate Authority"
+  },
+  "assertions": [
+    {
+      "label": "c2pa.actions",
+      "data": {
+        "actions": [
+          {
+            "action": "c2pa.created",
+            "when": "2026-02-06T10:00:00Z",
+            "software_agent": {
+              "name": "ProvenanceCode",
+              "version": "1.0.0"
+            },
+            "digital_source_type": "https://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+          },
+          {
+            "action": "c2pa.edited",
+            "when": "2026-02-06T10:05:00Z",
+            "software_agent": {
+              "name": "ProvenanceCode Validator",
+              "version": "1.0.0"
+            },
+            "changes": [
+              {
+                "description": "Validated decision schema",
+                "region": "entire"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "c2pa.metadata",
+      "data": {
+        "decision_record": {
+          "id": "template-example-decision",
+          "title": "Example Decision Template",
+          "status": "proposed",
+          "date_created": "2026-02-06",
+          "version": "1.0"
+        },
+        "provenance": {
+          "type": "architectural_decision",
+          "domain": "software_engineering",
+          "framework": "ProvenanceCode"
+        }
+      }
+    },
+    {
+      "label": "c2pa.claim",
+      "data": {
+        "dc:title": "Example Decision Template",
+        "dc:format": "application/json",
+        "dc:creator": {
+          "name": "Architecture Team",
+          "identifier": "team:architecture"
+        },
+        "dc:created": "2026-02-06T10:00:00Z",
+        "dc:modified": "2026-02-06T10:00:00Z"
+      }
+    },
+    {
+      "label": "stds.schema-org.CreativeWork",
+      "data": {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "name": "Example Decision Template",
+        "author": {
+          "@type": "Organization",
+          "name": "Architecture Team"
+        },
+        "dateCreated": "2026-02-06T10:00:00Z",
+        "dateModified": "2026-02-06T10:00:00Z",
+        "about": "Template for creating architectural decision records",
+        "keywords": [
+          "architecture",
+          "decision",
+          "template",
+          "provenancecode"
+        ]
+      }
+    },
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "name": "sha256",
+        "hash": "placeholder-hash-will-be-computed",
+        "url": "self#jumbf=/c2pa/urn:uuid:placeholder-uuid/c2pa.hash.data"
+      }
+    },
+    {
+      "label": "provenancecode.integrity",
+      "data": {
+        "files": [
+          {
+            "name": "decision.md",
+            "hash": "sha256:placeholder-hash",
+            "size": 0,
+            "modified": "2026-02-06T10:00:00Z"
+          },
+          {
+            "name": "decision.json",
+            "hash": "sha256:placeholder-hash",
+            "size": 0,
+            "modified": "2026-02-06T10:00:00Z"
+          },
+          {
+            "name": "prov.jsonld",
+            "hash": "sha256:placeholder-hash",
+            "size": 0,
+            "modified": "2026-02-06T10:00:00Z"
+          }
+        ],
+        "consistency_check": {
+          "json_schema_valid": true,
+          "markdown_json_consistent": true,
+          "prov_valid": true,
+          "all_required_fields_present": true
+        }
+      }
+    },
+    {
+      "label": "provenancecode.actors",
+      "data": {
+        "proposer": {
+          "name": "Technical Lead",
+          "role": "proposer",
+          "organization": "Architecture Team"
+        },
+        "deciders": [
+          {
+            "name": "Architecture Team",
+            "role": "decision-maker"
+          },
+          {
+            "name": "Security Team",
+            "role": "reviewer"
+          }
+        ],
+        "approvers": [
+          {
+            "name": "CTO",
+            "role": "executive-approval",
+            "date": "2026-02-06T11:00:00Z"
+          }
+        ]
+      }
+    },
+    {
+      "label": "provenancecode.relationships",
+      "data": {
+        "depends_on": [
+          "decision:002-foundational-decision"
+        ],
+        "related_to": [
+          "decision:005-related-decision"
+        ],
+        "supersedes": [
+          "decision:000-old-decision"
+        ],
+        "superseded_by": null
+      }
+    },
+    {
+      "label": "provenancecode.lifecycle",
+      "data": {
+        "status_history": [
+          {
+            "status": "proposed",
+            "date": "2026-02-06T10:00:00Z",
+            "author": "Technical Lead"
+          }
+        ],
+        "review_history": [
+          {
+            "reviewer": "Security Team",
+            "date": "2026-02-06T10:30:00Z",
+            "outcome": "approved",
+            "comments": "Meets security requirements"
+          }
+        ],
+        "next_review_date": "2026-08-06T00:00:00Z"
+      }
+    }
+  ],
+  "ingredients": [
+    {
+      "title": "Problem Analysis Document",
+      "format": "application/pdf",
+      "instance_id": "xmp:iid:problem-analysis-document",
+      "relationship": "inputTo",
+      "document_id": "evidence/problem-analysis.pdf",
+      "hash": {
+        "algorithm": "sha256",
+        "value": "placeholder-hash"
+      }
+    },
+    {
+      "title": "Proof of Concept Results",
+      "format": "application/markdown",
+      "instance_id": "xmp:iid:poc-results",
+      "relationship": "inputTo",
+      "document_id": "evidence/poc-results.md",
+      "hash": {
+        "algorithm": "sha256",
+        "value": "placeholder-hash"
+      }
+    }
+  ],
+  "redactions": [],
+  "alg": "ps256",
+  "content_credentials": {
+    "version": "1.3",
+    "produced_by": "ProvenanceCode",
+    "verified_by": "ProvenanceCode Validator v1.0",
+    "verification_status": "valid",
+    "verification_date": "2026-02-06T10:05:00Z"
+  },
+  "provenancecode_extensions": {
+    "schema_version": "1.0",
+    "decision_framework": "ProvenanceCode",
+    "validation": {
+      "schema_valid": true,
+      "cross_file_consistent": true,
+      "all_required_fields_present": true,
+      "no_broken_links": true
+    },
+    "audit_trail": {
+      "created_by": "ProvenanceCode CLI v1.0",
+      "creation_method": "automated-template",
+      "git_commit": "placeholder-commit-hash",
+      "git_branch": "main",
+      "repository": "https://github.com/org/project"
+    },
+    "metadata": {
+      "template_version": "1.0",
+      "last_validated": "2026-02-06T10:05:00Z",
+      "validator_version": "1.0.0"
+    },
+    "notes": [
+      "This is a C2PA manifest template for ProvenanceCode decision records",
+      "The manifest ensures content authenticity and tracks decision provenance",
+      "All hashes, signatures, and certificates should be generated during actual use",
+      "This format follows C2PA specification version 1.3",
+      "For more information: https://c2pa.org/specifications/"
+    ]
+  }
+}
+

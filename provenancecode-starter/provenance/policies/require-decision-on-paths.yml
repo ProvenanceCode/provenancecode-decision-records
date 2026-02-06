@@ -1,0 +1,245 @@
+# ProvenanceCode Policy: Require Decision Records for Protected Paths
+#
+# This policy enforces that changes to certain paths in the codebase must have
+# an associated decision record.
+#
+# Use this to ensure architectural decisions are documented before implementation.
+
+name: require-decision-on-paths
+version: 1.0
+description: |
+  Require decision records for changes to architecturally significant paths.
+  PRs that modify protected paths must reference a decision record.
+
+enabled: true
+
+# Paths that require decision records
+# Use glob patterns to match files and directories
+protected_paths:
+  # Core architecture
+  - path: "src/core/**"
+    reason: "Core architecture changes require architectural review"
+    exemptions:
+      - "src/core/**/*.test.js"
+      - "src/core/**/*.spec.js"
+    
+  # API definitions
+  - path: "src/api/**"
+    reason: "API changes affect contracts with clients"
+    exemptions:
+      - "src/api/**/*.test.js"
+      - "src/api/docs/**"
+  
+  # Database schemas
+  - path: "src/database/migrations/**"
+    reason: "Schema changes are irreversible and require careful planning"
+    exemptions: []
+  
+  # Infrastructure
+  - path: "infrastructure/**"
+    reason: "Infrastructure changes affect deployment and operations"
+    exemptions:
+      - "infrastructure/**.md"
+  
+  # Security
+  - path: "src/auth/**"
+    reason: "Authentication and authorization changes require security review"
+    exemptions:
+      - "src/auth/**/*.test.js"
+  
+  # Configuration
+  - path: "config/production/**"
+    reason: "Production configuration changes require approval"
+    exemptions: []
+
+# How to reference decision records
+decision_reference_patterns:
+  # In commit messages
+  - pattern: "#\\d{3}"
+    description: "Decision ID in commit message (e.g., #001)"
+    example: "feat: implement JWT auth (#004)"
+  
+  # In PR descriptions
+  - pattern: "Decision:\\s*#\\d{3}"
+    description: "Decision reference in PR description"
+    example: "Decision: #004"
+  
+  # In PR descriptions (alternative)
+  - pattern: "\\[Decision\\s+\\d{3}\\]"
+    description: "Decision reference in brackets"
+    example: "[Decision 004]"
+
+# Validation rules
+validation:
+  # Check that decision file exists
+  verify_decision_exists: true
+  
+  # Decision must be in accepted or implemented status
+  required_status:
+    - "accepted"
+    - "implemented"
+  
+  # Decision must not be deprecated
+  disallow_status:
+    - "deprecated"
+    - "rejected"
+    - "superseded"
+  
+  # Decision must be dated within the last X days (0 = no limit)
+  max_decision_age_days: 0
+  
+  # Require evidence for high-impact decisions
+  require_evidence: false
+
+# Exemptions
+exemptions:
+  # File patterns that are always exempt
+  always_exempt:
+    - "**/*.md"
+    - "**/*.txt"
+    - "**/README*"
+    - "**/.gitignore"
+    - "**/package-lock.json"
+    - "**/yarn.lock"
+  
+  # Branches that are exempt from this policy
+  exempt_branches:
+    - "dependabot/**"
+    - "renovate/**"
+  
+  # Authors who can bypass this policy (use sparingly!)
+  exempt_authors: []
+  
+  # PR labels that indicate exemption
+  exempt_labels:
+    - "hotfix"
+    - "emergency"
+    - "skip-decision-check"
+
+# Enforcement
+enforcement:
+  # Block PR merge if validation fails
+  block_merge: true
+  
+  # Post comment on PR with guidance
+  post_comment: true
+  
+  # Comment template
+  comment_template: |
+    ## 🏛️ Decision Record Required
+    
+    This PR modifies protected paths that require an architectural decision record.
+    
+    **Modified paths:**
+    {{modified_paths}}
+    
+    **Required action:**
+    1. Create a decision record using `./tools/new-decision.sh <decision-name>`
+    2. Reference the decision in your PR description (e.g., "Decision: #005")
+    3. Ensure the decision status is "accepted" or "implemented"
+    
+    **Why is this required?**
+    {{path_reasons}}
+    
+    **Need help?**
+    - See [Decision Records Guide](docs/decision-records.md)
+    - See [Quick Start](docs/quickstart.md)
+    - Ask in #architecture channel
+    
+    **Emergency bypass:**
+    Add the `emergency` label to bypass this check (requires architect approval).
+
+# Notifications
+notifications:
+  # Notify these teams when protected paths are changed
+  notify_teams:
+    - "@architecture-team"
+    - "@security-team"
+  
+  # Notify via Slack webhook (optional)
+  slack_webhook: ""
+  
+  # Email notifications (optional)
+  email: []
+
+# Metrics
+metrics:
+  # Track decision record coverage
+  track_coverage: true
+  
+  # Track bypass frequency
+  track_bypasses: true
+  
+  # Report metrics to
+  report_to: []
+
+# Custom rules (advanced)
+custom_rules:
+  # Example: Require specific decision types for certain paths
+  - name: "database-decisions-must-include-migration"
+    paths:
+      - "src/database/migrations/**"
+    requirements:
+      decision_tags_must_include:
+        - "database"
+        - "migration"
+      decision_must_have_section: "migration"
+  
+  # Example: API changes must have API-specific evidence
+  - name: "api-decisions-must-have-openapi-spec"
+    paths:
+      - "src/api/**"
+    requirements:
+      decision_tags_must_include:
+        - "api"
+      evidence_must_include:
+        - "openapi.yaml"
+        - "api-contract.md"
+
+# Examples
+examples:
+  good_commit:
+    message: "feat: add user authentication endpoint (#004)"
+    explanation: "References decision #004 in commit message"
+  
+  bad_commit:
+    message: "feat: add user authentication endpoint"
+    explanation: "No decision reference - will be blocked"
+  
+  good_pr:
+    description: |
+      ## Changes
+      Implements user authentication using JWT tokens.
+      
+      ## Decision
+      Decision: #004 (JWT-based Authentication)
+      
+      ## Testing
+      - Unit tests pass
+      - Integration tests pass
+    explanation: "Clear decision reference in PR description"
+  
+  bad_pr:
+    description: |
+      ## Changes
+      Implements user authentication using JWT tokens.
+      
+      ## Testing
+      - Unit tests pass
+    explanation: "No decision reference - will be blocked"
+
+# Documentation
+documentation:
+  policy_docs: "docs/policies/require-decision-on-paths.md"
+  decision_template: "provenance/decisions/TEMPLATE/"
+  help_url: "https://github.com/provenancecode/docs"
+
+# Version history
+changelog:
+  - version: 1.0
+    date: 2026-02-06
+    changes:
+      - "Initial policy creation"
+      - "Define protected paths"
+      - "Set up validation rules"
+

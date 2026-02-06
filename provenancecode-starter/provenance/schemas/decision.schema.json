@@ -1,0 +1,682 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://provenancecode.org/schemas/decision.schema.json",
+  "title": "ProvenanceCode Decision Record",
+  "description": "Schema for validating ProvenanceCode decision records",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "status",
+    "date",
+    "deciders",
+    "context",
+    "decision",
+    "consequences"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the decision",
+      "pattern": "^[a-z0-9-]+$",
+      "minLength": 1,
+      "maxLength": 100,
+      "examples": [
+        "001-use-postgresql",
+        "2026-02-06-jwt-authentication"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "description": "Short, descriptive title of the decision",
+      "minLength": 5,
+      "maxLength": 200,
+      "examples": [
+        "Use PostgreSQL for Primary Database",
+        "Implement JWT-based Authentication"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Current status of the decision",
+      "enum": [
+        "proposed",
+        "accepted",
+        "implemented",
+        "deprecated",
+        "superseded",
+        "rejected"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "description": "Date the decision was made (ISO 8601 format)",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "examples": [
+        "2026-02-06"
+      ]
+    },
+    "lastUpdated": {
+      "type": "string",
+      "description": "Date the decision was last updated",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "deciders": {
+      "type": "array",
+      "description": "People or teams who made the decision",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "examples": [
+          "Architecture Team",
+          "Jane Smith",
+          "Backend Lead"
+        ]
+      }
+    },
+    "context": {
+      "type": "object",
+      "description": "Background and rationale for the decision",
+      "required": [
+        "problem"
+      ],
+      "properties": {
+        "problem": {
+          "type": "string",
+          "description": "The problem or issue being addressed",
+          "minLength": 10
+        },
+        "currentSituation": {
+          "type": "string",
+          "description": "How things work currently"
+        },
+        "constraints": {
+          "type": "array",
+          "description": "Technical, business, or timeline constraints",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "description": "What the solution must provide",
+          "items": {
+            "type": "string"
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "description": "Assumptions being made",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "description": "The actual decision and implementation details",
+      "required": [
+        "summary"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Brief one-sentence summary of the decision",
+          "minLength": 10,
+          "maxLength": 500
+        },
+        "details": {
+          "type": "string",
+          "description": "Detailed explanation of the decision"
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "included": {
+              "type": "array",
+              "description": "What is in scope",
+              "items": {
+                "type": "string"
+              }
+            },
+            "excluded": {
+              "type": "array",
+              "description": "What is explicitly out of scope",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "timeline": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date"
+            },
+            "milestones": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "date",
+                  "description"
+                ],
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "completion": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      }
+    },
+    "consequences": {
+      "type": "object",
+      "description": "Positive and negative outcomes of the decision",
+      "required": [
+        "positive",
+        "negative"
+      ],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "description": "Positive outcomes and benefits",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "negative": {
+          "type": "array",
+          "description": "Negative consequences and trade-offs",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "neutral": {
+          "type": "array",
+          "description": "Neutral outcomes or risks to monitor",
+          "items": {
+            "type": "string"
+          }
+        },
+        "risks": {
+          "type": "array",
+          "description": "Identified risks with mitigation strategies",
+          "items": {
+            "type": "object",
+            "required": [
+              "description",
+              "likelihood",
+              "impact"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "likelihood": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "impact": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "mitigation": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "alternatives": {
+      "type": "array",
+      "description": "Alternative options that were considered",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "description"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the alternative"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this alternative involved"
+          },
+          "pros": {
+            "type": "array",
+            "description": "Advantages of this alternative",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cons": {
+            "type": "array",
+            "description": "Disadvantages of this alternative",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rejectionReason": {
+            "type": "string",
+            "description": "Why this alternative was not chosen"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Supporting materials and research",
+      "properties": {
+        "research": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "title"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "external",
+                  "internal",
+                  "documentation"
+                ]
+              }
+            }
+          }
+        },
+        "proofOfConcept": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "format": "uri"
+            },
+            "results": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            }
+          }
+        },
+        "benchmarks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "metric",
+              "value"
+            ],
+            "properties": {
+              "metric": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "met",
+                  "not-met",
+                  "exceeded"
+                ]
+              }
+            }
+          }
+        },
+        "feedback": {
+          "type": "object",
+          "properties": {
+            "team": {
+              "type": "string"
+            },
+            "stakeholders": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "relatedDecisions": {
+      "type": "object",
+      "description": "Links to related decisions",
+      "properties": {
+        "dependsOn": {
+          "type": "array",
+          "description": "Decisions this depends on",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relatedTo": {
+          "type": "array",
+          "description": "Related decisions",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supersedes": {
+          "type": "array",
+          "description": "Decisions this replaces",
+          "items": {
+            "type": "string"
+          }
+        },
+        "supersededBy": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Decision that replaces this one"
+        }
+      }
+    },
+    "implementation": {
+      "type": "object",
+      "description": "Implementation details",
+      "properties": {
+        "components": {
+          "type": "array",
+          "description": "Files or components affected",
+          "items": {
+            "type": "string"
+          }
+        },
+        "configuration": {
+          "type": "object",
+          "description": "Configuration requirements",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "migration": {
+          "type": "object",
+          "properties": {
+            "required": {
+              "type": "boolean"
+            },
+            "steps": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "rollback": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "monitoring": {
+      "type": "object",
+      "description": "Monitoring and review information",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string"
+              },
+              "alert": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "reviewDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "successCriteria": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Metadata for categorization and search",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "description": "Tags for categorization",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "examples": [
+            [
+              "architecture",
+              "database",
+              "security"
+            ]
+          ]
+        },
+        "affects": {
+          "type": "array",
+          "description": "Areas of codebase affected",
+          "items": {
+            "type": "string"
+          },
+          "examples": [
+            [
+              "backend",
+              "frontend",
+              "infrastructure"
+            ]
+          ]
+        },
+        "owner": {
+          "type": "string",
+          "description": "Primary owner of this decision"
+        },
+        "stakeholders": {
+          "type": "array",
+          "description": "Stakeholders involved",
+          "items": {
+            "type": "string"
+          }
+        },
+        "priority": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "effort": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "description": "Approval information",
+      "properties": {
+        "proposedBy": {
+          "type": "object",
+          "required": [
+            "name",
+            "date"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "approvedBy": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "date"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string"
+              },
+              "date": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "implementationStarted": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "implementationCompleted": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      }
+    },
+    "updates": {
+      "type": "array",
+      "description": "History of updates to this decision",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "author",
+          "description"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "author": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "provenanceCode": {
+      "type": "object",
+      "description": "ProvenanceCode metadata",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "ProvenanceCode schema version",
+          "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+        },
+        "template": {
+          "type": "string",
+          "description": "Template used to create this decision"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "hash": {
+          "type": "string",
+          "description": "Hash of decision content for integrity verification"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

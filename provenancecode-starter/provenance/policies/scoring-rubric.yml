@@ -1,0 +1,422 @@
+# ProvenanceCode Decision Quality Scoring Rubric
+#
+# This rubric scores decision records on completeness, clarity, and quality.
+# Use this to ensure decision records meet quality standards.
+
+name: decision-quality-rubric
+version: 1.0
+description: |
+  Scoring rubric for evaluating the quality of decision records.
+  Scores range from 0-100, with 70+ considered acceptable quality.
+
+enabled: true
+
+# Scoring categories and weights
+categories:
+  completeness:
+    weight: 0.35
+    description: "All required sections are present and filled out"
+    
+  clarity:
+    weight: 0.25
+    description: "Decision is clear, understandable, and well-written"
+    
+  evidence:
+    weight: 0.20
+    description: "Decision is backed by evidence and research"
+    
+  consequences:
+    weight: 0.15
+    description: "Both positive and negative consequences are documented"
+    
+  actionability:
+    weight: 0.05
+    description: "Decision is specific and implementable"
+
+# Detailed scoring criteria
+scoring:
+  completeness:
+    # Required sections (5 points each)
+    required_sections:
+      - name: "title"
+        points: 5
+        check: "title exists and is 5-200 characters"
+      
+      - name: "status"
+        points: 5
+        check: "status is one of: proposed, accepted, implemented, deprecated, superseded, rejected"
+      
+      - name: "date"
+        points: 5
+        check: "date exists in ISO 8601 format"
+      
+      - name: "deciders"
+        points: 5
+        check: "at least one decider is listed"
+      
+      - name: "context"
+        points: 5
+        check: "context section exists with at least 100 characters"
+      
+      - name: "decision"
+        points: 5
+        check: "decision section exists with at least 100 characters"
+      
+      - name: "consequences"
+        points: 5
+        check: "consequences section exists with positive and negative items"
+    
+    # Optional but valuable sections (2 points each)
+    optional_sections:
+      - name: "alternatives"
+        points: 2
+        check: "at least one alternative is documented"
+      
+      - name: "evidence"
+        points: 2
+        check: "evidence section exists with supporting materials"
+      
+      - name: "related_decisions"
+        points: 2
+        check: "related decisions are linked"
+      
+      - name: "implementation"
+        points: 2
+        check: "implementation details are provided"
+      
+      - name: "monitoring"
+        points: 2
+        check: "monitoring/review plan exists"
+    
+    max_points: 45
+
+  clarity:
+    criteria:
+      - name: "title_descriptive"
+        points: 5
+        check: "title clearly describes what decision is about"
+        automated: false
+      
+      - name: "context_clear"
+        points: 5
+        check: "context explains the problem clearly"
+        automated: false
+      
+      - name: "decision_specific"
+        points: 5
+        check: "decision is specific, not vague"
+        automated: false
+      
+      - name: "no_jargon"
+        points: 3
+        check: "minimal unexplained jargon or acronyms"
+        automated: false
+      
+      - name: "well_structured"
+        points: 3
+        check: "document is well-organized and easy to follow"
+        automated: false
+      
+      - name: "readability"
+        points: 4
+        check: "text is readable (Flesch-Kincaid grade level < 12)"
+        automated: true
+        threshold: 12
+    
+    max_points: 25
+
+  evidence:
+    criteria:
+      - name: "research_provided"
+        points: 5
+        check: "links to research or documentation"
+        automated: true
+      
+      - name: "poc_or_benchmark"
+        points: 5
+        check: "proof-of-concept or benchmark results included"
+        automated: true
+      
+      - name: "data_driven"
+        points: 5
+        check: "decision backed by data, not just opinion"
+        automated: false
+      
+      - name: "team_feedback"
+        points: 3
+        check: "team or stakeholder feedback documented"
+        automated: true
+      
+      - name: "external_validation"
+        points: 2
+        check: "references to industry best practices or standards"
+        automated: true
+    
+    max_points: 20
+
+  consequences:
+    criteria:
+      - name: "positive_listed"
+        points: 3
+        check: "at least 2 positive consequences listed"
+        automated: true
+        threshold: 2
+      
+      - name: "negative_listed"
+        points: 3
+        check: "at least 2 negative consequences listed"
+        automated: true
+        threshold: 2
+      
+      - name: "realistic_negatives"
+        points: 3
+        check: "negatives are realistic, not trivial"
+        automated: false
+      
+      - name: "risks_identified"
+        points: 3
+        check: "specific risks are identified"
+        automated: true
+      
+      - name: "mitigation_strategies"
+        points: 3
+        check: "mitigation strategies for risks are provided"
+        automated: true
+    
+    max_points: 15
+
+  actionability:
+    criteria:
+      - name: "implementation_path"
+        points: 2
+        check: "clear implementation path is described"
+        automated: false
+      
+      - name: "success_criteria"
+        points: 2
+        check: "success criteria are defined"
+        automated: true
+      
+      - name: "timeline"
+        points: 1
+        check: "timeline or milestones are specified"
+        automated: true
+    
+    max_points: 5
+
+# Total: 110 possible points, normalized to 100
+
+# Quality thresholds
+thresholds:
+  excellent:
+    min_score: 90
+    label: "Excellent"
+    emoji: "🌟"
+    description: "Exemplary decision record, should be used as template"
+  
+  good:
+    min_score: 70
+    label: "Good"
+    emoji: "✅"
+    description: "Acceptable quality, meets all requirements"
+  
+  needs_improvement:
+    min_score: 50
+    label: "Needs Improvement"
+    emoji: "⚠️"
+    description: "Some issues, revisions recommended"
+  
+  poor:
+    min_score: 0
+    label: "Poor"
+    emoji: "❌"
+    description: "Significant issues, major revisions required"
+
+# Minimum acceptable score
+minimum_acceptable_score: 70
+
+# Enforcement
+enforcement:
+  # Block PR merge if score is below threshold
+  block_merge_below_score: 50
+  
+  # Warn if score is below threshold
+  warn_below_score: 70
+  
+  # Post score as PR comment
+  post_score_comment: true
+  
+  # Comment template
+  score_comment_template: |
+    ## 📊 Decision Quality Score: {{score}}/100 {{emoji}}
+    
+    **Status:** {{label}}
+    
+    ### Breakdown
+    - **Completeness:** {{completeness_score}}/{{completeness_max}} ({{completeness_percent}}%)
+    - **Clarity:** {{clarity_score}}/{{clarity_max}} ({{clarity_percent}}%)
+    - **Evidence:** {{evidence_score}}/{{evidence_max}} ({{evidence_percent}}%)
+    - **Consequences:** {{consequences_score}}/{{consequences_max}} ({{consequences_percent}}%)
+    - **Actionability:** {{actionability_score}}/{{actionability_max}} ({{actionability_percent}}%)
+    
+    ### Recommendations
+    {{recommendations}}
+    
+    ### Missing or Weak Sections
+    {{weak_sections}}
+    
+    ---
+    
+    💡 **Tip:** Aim for 70+ for acceptable quality, 90+ for excellent.
+    📚 See [Decision Records Guide](docs/decision-records.md) for best practices.
+
+# Automated checks
+automated_checks:
+  # JSON schema validation
+  - check: "valid_json_schema"
+    category: "completeness"
+    points: 5
+    critical: true
+  
+  # File existence
+  - check: "decision_md_exists"
+    category: "completeness"
+    points: 5
+    critical: true
+  
+  - check: "decision_json_exists"
+    category: "completeness"
+    points: 2
+  
+  # Minimum lengths
+  - check: "context_min_length"
+    category: "clarity"
+    points: 3
+    threshold: 100
+  
+  - check: "decision_min_length"
+    category: "clarity"
+    points: 3
+    threshold: 100
+  
+  # Consequences
+  - check: "positive_consequences_count"
+    category: "consequences"
+    points: 3
+    threshold: 2
+  
+  - check: "negative_consequences_count"
+    category: "consequences"
+    points: 3
+    threshold: 2
+  
+  # Evidence
+  - check: "evidence_files_exist"
+    category: "evidence"
+    points: 5
+  
+  - check: "research_links_count"
+    category: "evidence"
+    points: 3
+    threshold: 1
+
+# Manual review criteria
+manual_review:
+  enabled: false
+  reviewers:
+    - "@architecture-team"
+  criteria:
+    - "Clarity of writing"
+    - "Appropriateness of decision"
+    - "Realism of consequences"
+    - "Quality of alternatives analysis"
+
+# Recommendations based on score
+recommendations:
+  missing_alternatives:
+    condition: "alternatives_count == 0"
+    message: "Consider adding alternative options that were evaluated"
+    priority: "medium"
+  
+  missing_evidence:
+    condition: "evidence_count == 0"
+    message: "Add supporting evidence, research, or POC results"
+    priority: "high"
+  
+  weak_consequences:
+    condition: "negative_consequences_count < 2"
+    message: "Add more realistic negative consequences or trade-offs"
+    priority: "high"
+  
+  no_implementation_details:
+    condition: "implementation_section_missing"
+    message: "Add implementation guidance for developers"
+    priority: "medium"
+  
+  no_success_criteria:
+    condition: "success_criteria_missing"
+    message: "Define measurable success criteria"
+    priority: "medium"
+  
+  short_context:
+    condition: "context_length < 200"
+    message: "Expand context section to fully explain the problem"
+    priority: "high"
+
+# Reporting
+reporting:
+  # Generate quality report
+  generate_report: true
+  
+  # Report format
+  report_format: "markdown"
+  
+  # Include in PR comment
+  include_in_pr: true
+  
+  # Track quality over time
+  track_metrics: true
+  
+  # Metrics to track
+  metrics:
+    - "average_score"
+    - "score_distribution"
+    - "most_common_weaknesses"
+    - "improvement_over_time"
+
+# Examples
+examples:
+  excellent_decision:
+    score: 95
+    strengths:
+      - "Complete documentation of all sections"
+      - "Clear, well-written explanation"
+      - "Strong evidence with POC and benchmarks"
+      - "Realistic positive and negative consequences"
+      - "Detailed implementation guidance"
+    path: "provenance/decisions/TEMPLATE/"
+  
+  poor_decision:
+    score: 35
+    weaknesses:
+      - "Missing context section"
+      - "No alternatives considered"
+      - "No evidence provided"
+      - "Only positive consequences listed"
+      - "Vague decision statement"
+
+# Scoring script integration
+integration:
+  script: "tools/score-decision.js"
+  api_endpoint: "/api/score-decision"
+  webhook: ""
+
+# Version history
+changelog:
+  - version: 1.0
+    date: 2026-02-06
+    changes:
+      - "Initial rubric creation"
+      - "Define scoring categories and criteria"
+      - "Set quality thresholds"
+

@@ -1,0 +1,212 @@
+{
+  "@context": {
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "dc": "http://purl.org/dc/terms/",
+    "provenancecode": "https://provenancecode.org/ns#"
+  },
+  "@graph": [
+    {
+      "@id": "decision:template-example-decision",
+      "@type": "prov:Entity",
+      "dc:title": "Example Decision Template",
+      "dc:description": "Template for creating new ProvenanceCode decision records",
+      "dc:created": {
+        "@value": "2026-02-06T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "dc:modified": {
+        "@value": "2026-02-06T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "provenancecode:status": "proposed",
+      "provenancecode:decisionId": "template-example-decision",
+      "prov:wasGeneratedBy": {
+        "@id": "activity:create-decision-template"
+      },
+      "prov:wasAttributedTo": [
+        {
+          "@id": "agent:architecture-team"
+        }
+      ],
+      "prov:wasDerivedFrom": [
+        {
+          "@id": "decision:previous-decision-example",
+          "@type": "prov:Entity",
+          "prov:hadRole": "superseded-decision"
+        }
+      ]
+    },
+    {
+      "@id": "activity:create-decision-template",
+      "@type": "prov:Activity",
+      "prov:startedAtTime": {
+        "@value": "2026-02-06T09:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:endedAtTime": {
+        "@value": "2026-02-06T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:wasAssociatedWith": {
+        "@id": "agent:architecture-team"
+      },
+      "prov:used": [
+        {
+          "@id": "entity:problem-analysis",
+          "@type": "prov:Entity",
+          "dc:title": "Problem Analysis Document",
+          "prov:hadRole": "context-input"
+        },
+        {
+          "@id": "entity:poc-results",
+          "@type": "prov:Entity",
+          "dc:title": "Proof of Concept Results",
+          "prov:hadRole": "evidence"
+        }
+      ],
+      "provenancecode:reviewProcess": {
+        "@id": "activity:decision-review"
+      }
+    },
+    {
+      "@id": "agent:architecture-team",
+      "@type": [
+        "prov:Agent",
+        "prov:Organization"
+      ],
+      "foaf:name": "Architecture Team",
+      "provenancecode:role": "decision-maker"
+    },
+    {
+      "@id": "agent:technical-lead",
+      "@type": [
+        "prov:Agent",
+        "prov:Person"
+      ],
+      "foaf:name": "Technical Lead",
+      "prov:actedOnBehalfOf": {
+        "@id": "agent:architecture-team"
+      },
+      "provenancecode:role": "proposer"
+    },
+    {
+      "@id": "agent:security-team",
+      "@type": [
+        "prov:Agent",
+        "prov:Organization"
+      ],
+      "foaf:name": "Security Team",
+      "provenancecode:role": "reviewer"
+    },
+    {
+      "@id": "activity:decision-review",
+      "@type": "prov:Activity",
+      "prov:startedAtTime": {
+        "@value": "2026-02-06T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:endedAtTime": {
+        "@value": "2026-02-06T11:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:wasAssociatedWith": [
+        {
+          "@id": "agent:architecture-team"
+        },
+        {
+          "@id": "agent:security-team"
+        }
+      ],
+      "provenancecode:reviewType": "technical-and-security",
+      "provenancecode:reviewOutcome": "approved-with-conditions"
+    },
+    {
+      "@id": "entity:problem-analysis",
+      "@type": "prov:Entity",
+      "dc:title": "Problem Analysis Document",
+      "dc:created": {
+        "@value": "2026-01-15T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:wasAttributedTo": {
+        "@id": "agent:technical-lead"
+      },
+      "provenancecode:documentType": "analysis"
+    },
+    {
+      "@id": "entity:poc-results",
+      "@type": "prov:Entity",
+      "dc:title": "Proof of Concept Results",
+      "dc:created": {
+        "@value": "2026-01-30T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:wasGeneratedBy": {
+        "@id": "activity:poc-implementation"
+      },
+      "prov:wasAttributedTo": {
+        "@id": "agent:development-team"
+      },
+      "provenancecode:documentType": "evidence"
+    },
+    {
+      "@id": "activity:poc-implementation",
+      "@type": "prov:Activity",
+      "prov:startedAtTime": {
+        "@value": "2026-01-20T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:endedAtTime": {
+        "@value": "2026-01-30T10:00:00Z",
+        "@type": "xsd:dateTime"
+      },
+      "prov:wasAssociatedWith": {
+        "@id": "agent:development-team"
+      }
+    },
+    {
+      "@id": "agent:development-team",
+      "@type": [
+        "prov:Agent",
+        "prov:Organization"
+      ],
+      "foaf:name": "Development Team",
+      "provenancecode:role": "implementer"
+    },
+    {
+      "@id": "decision:related-decision-001",
+      "@type": "prov:Entity",
+      "dc:title": "Related Decision 001",
+      "prov:hadInfluence": {
+        "@id": "decision:template-example-decision"
+      },
+      "provenancecode:relationshipType": "depends-on"
+    },
+    {
+      "@id": "decision:related-decision-002",
+      "@type": "prov:Entity",
+      "dc:title": "Related Decision 002",
+      "prov:wasInfluencedBy": {
+        "@id": "decision:template-example-decision"
+      },
+      "provenancecode:relationshipType": "informs"
+    }
+  ],
+  "provenancecode:metadata": {
+    "version": "1.0",
+    "generator": "ProvenanceCode Template Generator",
+    "generatedAt": "2026-02-06T10:00:00Z",
+    "validatedBy": "ProvenanceCode Validator v1.0",
+    "validatedAt": "2026-02-06T10:05:00Z",
+    "provStandard": "W3C PROV-DM 1.0",
+    "notes": [
+      "This is a template showing the structure of a PROV-LD decision record",
+      "Replace all placeholder values with actual decision information",
+      "Maintain all required PROV relationships for traceability",
+      "Add additional entities, activities, and agents as needed for your decision context"
+    ]
+  }
+}
+

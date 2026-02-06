@@ -1,0 +1,231 @@
+{
+  "$schema": "../../schemas/decision.schema.json",
+  "id": "template-example-decision",
+  "title": "Example Decision Template",
+  "status": "proposed",
+  "date": "2026-02-06",
+  "lastUpdated": "2026-02-06",
+  "deciders": [
+    "Architecture Team",
+    "Technical Lead",
+    "Security Team"
+  ],
+  "context": {
+    "problem": "Brief description of the problem or issue being addressed",
+    "currentSituation": "Description of how things work currently",
+    "constraints": [
+      "Technical constraint 1",
+      "Business constraint 2",
+      "Timeline constraint 3"
+    ],
+    "requirements": [
+      "Must support requirement 1",
+      "Should handle requirement 2",
+      "Must comply with requirement 3"
+    ]
+  },
+  "decision": {
+    "summary": "Brief one-sentence summary of what was decided",
+    "details": "Detailed explanation of the decision and how it will be implemented",
+    "scope": {
+      "included": [
+        "What is in scope for this decision"
+      ],
+      "excluded": [
+        "What is explicitly out of scope"
+      ]
+    },
+    "timeline": {
+      "start": "2026-02-06",
+      "milestones": [
+        {
+          "date": "2026-03-01",
+          "description": "Phase 1 complete"
+        },
+        {
+          "date": "2026-04-01",
+          "description": "Phase 2 complete"
+        }
+      ],
+      "completion": "2026-05-01"
+    }
+  },
+  "consequences": {
+    "positive": [
+      "Positive outcome 1",
+      "Positive outcome 2",
+      "Positive outcome 3"
+    ],
+    "negative": [
+      "Negative consequence 1 (and mitigation strategy)",
+      "Trade-off 2 (and why it's acceptable)",
+      "Risk 3 (and monitoring plan)"
+    ],
+    "risks": [
+      {
+        "description": "Specific risk identified",
+        "likelihood": "low|medium|high",
+        "impact": "low|medium|high",
+        "mitigation": "How we plan to mitigate this risk"
+      }
+    ]
+  },
+  "alternatives": [
+    {
+      "name": "Alternative Option 1",
+      "description": "What this alternative involved",
+      "pros": [
+        "Advantage 1",
+        "Advantage 2"
+      ],
+      "cons": [
+        "Disadvantage 1",
+        "Disadvantage 2"
+      ],
+      "rejectionReason": "Why this alternative was not chosen"
+    },
+    {
+      "name": "Alternative Option 2",
+      "description": "What this alternative involved",
+      "pros": [
+        "Advantage 1"
+      ],
+      "cons": [
+        "Disadvantage 1"
+      ],
+      "rejectionReason": "Why this alternative was not chosen"
+    }
+  ],
+  "evidence": {
+    "research": [
+      {
+        "title": "Research Document Title",
+        "url": "https://example.com/research",
+        "type": "external|internal|documentation"
+      }
+    ],
+    "proofOfConcept": {
+      "repository": "https://github.com/org/poc-repo",
+      "results": "evidence/poc-results.md",
+      "summary": "POC demonstrated feasibility with positive results"
+    },
+    "benchmarks": [
+      {
+        "metric": "Performance metric",
+        "value": "Measured value",
+        "target": "Target value",
+        "status": "met|not-met|exceeded"
+      }
+    ],
+    "feedback": {
+      "team": "85% of team supports this decision",
+      "stakeholders": "All stakeholders approved"
+    }
+  },
+  "relatedDecisions": {
+    "dependsOn": [
+      "002-foundational-decision"
+    ],
+    "relatedTo": [
+      "005-related-decision",
+      "007-another-related-decision"
+    ],
+    "supersedes": [
+      "000-old-decision"
+    ],
+    "supersededBy": null
+  },
+  "implementation": {
+    "components": [
+      "src/component1",
+      "src/component2"
+    ],
+    "configuration": {
+      "ENV_VAR_1": "Description of what this configures",
+      "ENV_VAR_2": "Description of what this configures"
+    },
+    "migration": {
+      "required": true,
+      "steps": [
+        "Migration step 1",
+        "Migration step 2",
+        "Migration step 3"
+      ],
+      "rollback": "Rollback strategy if implementation fails"
+    }
+  },
+  "monitoring": {
+    "metrics": [
+      {
+        "name": "Metric to track",
+        "target": "Target value",
+        "alert": "Alert threshold"
+      }
+    ],
+    "reviewDate": "2026-08-01",
+    "successCriteria": [
+      "Measurable success criterion 1",
+      "Measurable success criterion 2"
+    ]
+  },
+  "metadata": {
+    "tags": [
+      "architecture",
+      "security",
+      "performance",
+      "api"
+    ],
+    "affects": [
+      "backend",
+      "frontend",
+      "infrastructure"
+    ],
+    "owner": "Technical Lead Name",
+    "stakeholders": [
+      "Security Team",
+      "Frontend Team",
+      "DevOps Team"
+    ],
+    "priority": "high|medium|low",
+    "effort": "high|medium|low"
+  },
+  "approval": {
+    "proposedBy": {
+      "name": "Proposer Name",
+      "role": "Role",
+      "date": "2026-02-06"
+    },
+    "approvedBy": [
+      {
+        "name": "Approver 1",
+        "role": "Role",
+        "date": "2026-02-06"
+      },
+      {
+        "name": "Approver 2",
+        "role": "Role",
+        "date": "2026-02-06"
+      }
+    ],
+    "implementationStarted": "2026-02-10",
+    "implementationCompleted": null
+  },
+  "updates": [
+    {
+      "date": "2026-02-06",
+      "author": "Author Name",
+      "description": "Initial decision created",
+      "changes": [
+        "Created decision record"
+      ]
+    }
+  ],
+  "provenanceCode": {
+    "version": "1.0",
+    "template": "standard",
+    "created": "2026-02-06T10:00:00Z",
+    "modified": "2026-02-06T10:00:00Z",
+    "hash": "sha256:placeholder-hash-will-be-generated"
+  }
+}
+

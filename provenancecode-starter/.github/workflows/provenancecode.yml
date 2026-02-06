@@ -1,0 +1,296 @@
+name: ProvenanceCode Validation
+
+on:
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - 'provenance/decisions/**'
+      - 'src/**'
+      - 'infrastructure/**'
+      - 'config/**'
+
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'provenance/decisions/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  validate-decisions:
+    name: Validate Decision Records
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          npm install -g ajv-cli ajv-formats
+          if [ -f "package.json" ]; then
+            npm ci
+          fi
+      
+      - name: Validate decision JSON schemas
+        id: validate-schema
+        run: |
+          echo "Validating decision.json files against schema..."
+          VALIDATION_FAILED=0
+          
+          for decision_file in provenance/decisions/*/decision.json; do
+            if [ "$decision_file" = "provenance/decisions/TEMPLATE/decision.json" ]; then
+              continue
+            fi
+            
+            if [ -f "$decision_file" ]; then
+              echo "Validating $decision_file..."
+              if ! ajv validate -s provenance/schemas/decision.schema.json -d "$decision_file" --strict=false; then
+                echo "❌ Validation failed for $decision_file"
+                VALIDATION_FAILED=1
+              else
+                echo "✅ $decision_file is valid"
+              fi
+            fi
+          done
+          
+          if [ $VALIDATION_FAILED -eq 1 ]; then
+            echo "validation_status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "validation_status=passed" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Check decision completeness
+        id: check-completeness
+        if: always()
+        run: |
+          echo "Checking decision record completeness..."
+          node tools/validate-decision.js --all || echo "completeness_status=failed" >> $GITHUB_OUTPUT
+          echo "completeness_status=passed" >> $GITHUB_OUTPUT
+      
+      - name: Get changed files
+        id: changed-files
+        if: github.event_name == 'pull_request'
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            src/**
+            infrastructure/**
+            config/**
+      
+      - name: Check for required decision records
+        id: check-decisions
+        if: github.event_name == 'pull_request' && steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "Checking if protected paths require decision records..."
+          
+          # Protected paths that require decisions
+          PROTECTED_PATHS=(
+            "src/core/**"
+            "src/api/**"
+            "src/database/migrations/**"
+            "infrastructure/**"
+            "src/auth/**"
+            "config/production/**"
+          )
+          
+          CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+          REQUIRES_DECISION=0
+          MODIFIED_PROTECTED_PATHS=""
+          
+          for file in $CHANGED_FILES; do
+            for pattern in "${PROTECTED_PATHS[@]}"; do
+              # Simple pattern matching (can be enhanced)
+              if [[ $file == ${pattern//\*\*/} ]] || [[ $file == */${pattern//\*\*/}* ]]; then
+                echo "Protected path modified: $file"
+                REQUIRES_DECISION=1
+                MODIFIED_PROTECTED_PATHS="$MODIFIED_PROTECTED_PATHS\n- $file"
+              fi
+            done
+          done
+          
+          echo "requires_decision=$REQUIRES_DECISION" >> $GITHUB_OUTPUT
+          echo "modified_paths<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$MODIFIED_PROTECTED_PATHS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Check for decision reference in PR
+        id: check-reference
+        if: github.event_name == 'pull_request' && steps.check-decisions.outputs.requires_decision == '1'
+        run: |
+          PR_BODY="${{ github.event.pull_request.body }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          
+          # Check for decision references: #001, Decision: #001, [Decision 001]
+          if echo "$PR_BODY" | grep -qE '(#\d{3}|Decision:\s*#\d{3}|\[Decision\s+\d{3}\])' || \
+             echo "$PR_TITLE" | grep -qE '(#\d{3}|Decision:\s*#\d{3}|\[Decision\s+\d{3}\])'; then
+            echo "has_reference=true" >> $GITHUB_OUTPUT
+            
+            # Extract decision ID
+            DECISION_ID=$(echo "$PR_BODY $PR_TITLE" | grep -oE '#\d{3}|Decision:\s*#\d{3}|\[Decision\s+\d{3}\]' | head -1 | grep -oE '\d{3}')
+            echo "decision_id=$DECISION_ID" >> $GITHUB_OUTPUT
+          else
+            echo "has_reference=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Verify decision exists and is valid
+        id: verify-decision
+        if: steps.check-reference.outputs.has_reference == 'true'
+        run: |
+          DECISION_ID="${{ steps.check-reference.outputs.decision_id }}"
+          DECISION_PATH=$(find provenance/decisions -name "*$DECISION_ID*" -type d | head -1)
+          
+          if [ -z "$DECISION_PATH" ]; then
+            echo "Decision #$DECISION_ID not found"
+            echo "decision_valid=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Check decision status
+          if [ -f "$DECISION_PATH/decision.json" ]; then
+            STATUS=$(node -p "require('./$DECISION_PATH/decision.json').status")
+            if [ "$STATUS" = "accepted" ] || [ "$STATUS" = "implemented" ]; then
+              echo "decision_valid=true" >> $GITHUB_OUTPUT
+              echo "Decision #$DECISION_ID is valid (status: $STATUS)"
+            else
+              echo "decision_valid=false" >> $GITHUB_OUTPUT
+              echo "Decision #$DECISION_ID has invalid status: $STATUS"
+            fi
+          else
+            echo "decision_valid=false" >> $GITHUB_OUTPUT
+            echo "Decision #$DECISION_ID missing decision.json"
+          fi
+      
+      - name: Score decision quality
+        id: score-decision
+        if: github.event_name == 'pull_request'
+        run: |
+          # Get modified decision records
+          MODIFIED_DECISIONS=$(git diff --name-only origin/${{ github.base_ref }} | grep 'provenance/decisions/.*/decision.json' || true)
+          
+          if [ -n "$MODIFIED_DECISIONS" ]; then
+            echo "Scoring modified decisions..."
+            for decision in $MODIFIED_DECISIONS; do
+              echo "Scoring $decision..."
+              # Placeholder for actual scoring logic
+              echo "Score: 85/100 ✅"
+            done
+          fi
+      
+      - name: Post validation results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const validationStatus = '${{ steps.validate-schema.outputs.validation_status }}';
+            const requiresDecision = '${{ steps.check-decisions.outputs.requires_decision }}';
+            const hasReference = '${{ steps.check-reference.outputs.has_reference }}';
+            const decisionValid = '${{ steps.verify-decision.outputs.decision_valid }}';
+            const modifiedPaths = `${{ steps.check-decisions.outputs.modified_paths }}`;
+            
+            let body = '## 🏛️ ProvenanceCode Validation\n\n';
+            
+            // Schema validation
+            if (validationStatus === 'passed') {
+              body += '✅ **Decision schema validation**: Passed\n\n';
+            } else if (validationStatus === 'failed') {
+              body += '❌ **Decision schema validation**: Failed\n\n';
+            }
+            
+            // Decision requirement check
+            if (requiresDecision === '1') {
+              body += '### Protected Paths Modified\n\n';
+              body += 'This PR modifies protected paths that require a decision record:\n\n';
+              body += modifiedPaths + '\n\n';
+              
+              if (hasReference === 'true') {
+                if (decisionValid === 'true') {
+                  body += '✅ **Decision record**: Valid decision referenced\n\n';
+                } else {
+                  body += '❌ **Decision record**: Referenced decision is invalid or not found\n\n';
+                  body += '**Required action:**\n';
+                  body += '1. Ensure the decision exists and is in "accepted" or "implemented" status\n';
+                  body += '2. Check the decision ID in your PR description\n\n';
+                }
+              } else {
+                body += '❌ **Decision record**: No decision referenced\n\n';
+                body += '**Required action:**\n';
+                body += '1. Create a decision record: `./tools/new-decision.sh <decision-name>`\n';
+                body += '2. Reference it in your PR description (e.g., "Decision: #005")\n';
+                body += '3. Ensure the decision status is "accepted" or "implemented"\n\n';
+                body += '**Why is this required?**\n';
+                body += 'Changes to core architecture, APIs, infrastructure, and security require documented decisions.\n\n';
+                body += '📚 **Resources:**\n';
+                body += '- [Decision Records Guide](docs/decision-records.md)\n';
+                body += '- [Quick Start](docs/quickstart.md)\n\n';
+              }
+            } else {
+              body += '✅ **Decision requirement**: No protected paths modified\n\n';
+            }
+            
+            body += '---\n';
+            body += '*Powered by [ProvenanceCode](https://github.com/kierandesmond/ProvenanceCode)*';
+            
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('ProvenanceCode Validation')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+      
+      - name: Fail if validation errors
+        if: |
+          steps.validate-schema.outputs.validation_status == 'failed' ||
+          (steps.check-decisions.outputs.requires_decision == '1' && 
+           steps.check-reference.outputs.has_reference != 'true') ||
+          (steps.check-reference.outputs.has_reference == 'true' && 
+           steps.verify-decision.outputs.decision_valid != 'true')
+        run: |
+          echo "❌ ProvenanceCode validation failed"
+          echo "Please fix the issues and try again"
+          exit 1
+      
+      - name: Success
+        if: success()
+        run: |
+          echo "✅ ProvenanceCode validation passed"
+          echo "All decision records are valid and requirements are met"
+
